@@ -5,7 +5,7 @@ This repository contains the implementation of heuristic-based search algorithms
 📌 How to Run the Code
 1️⃣ Clone the Repository
 
-git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git
+git clone https://github.com/WOROOD12/COE695---Intelligent-Computing.git
 cd COE695---Intelligent-Computing
 
 2️⃣ Install Dependencies
