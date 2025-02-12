@@ -22,32 +22,52 @@ Execute the script to generate and solve a maze:
 python main.py
 
 This will:
+
 Generate random mazes of different sizes (30×30, 35×35, 40×40).
+
 Solve them using A and Greedy BFS*.
+
 Visualize the expanded nodes, path cost, and execution time.
+
 📊 Output Results
+
 Maze Images:
+
 generated_mazes.png → Displays randomly generated mazes.
+
 Performance Graphs:
+
 nodes_expanded_comparison.png → Shows expanded nodes per algorithm.
+
 execution_time_comparison.png → Compares execution time across heuristics.
 
 🔧 Configuration
+
 Modify main.py to customize:
+
 Maze size (default: 30x30, 35x35, 40x40).
+
 Obstacle density (default: 30%).
+
 Algorithm selection (A* or Greedy BFS).
 
 📚 Dependencies
+
 Listed in requirements.txt:
+
 numpy
+
 matplotlib
+
 seaborn
+
 pandas
 
 Install them using:
+
 pip install -r requirements.txt
 
 📜 License
+
 This project is for educational purposes only.
 
