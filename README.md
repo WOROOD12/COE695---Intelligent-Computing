@@ -6,14 +6,19 @@ This repository contains the implementation of heuristic-based search algorithms
 1️⃣ Clone the Repository
 
 git clone https://github.com/WOROOD12/COE695---Intelligent-Computing.git
+
 cd COE695---Intelligent-Computing
 
 2️⃣ Install Dependencies
+
 Ensure you have Python 3.x installed, then install the required packages:
+
 pip install -r requirements.txt
 
 3️⃣ Run the Program
+
 Execute the script to generate and solve a maze:
+
 python main.py
 
 This will:
