@@ -1,6 +1,5 @@
-import sys
 import heapq
-from PIL import Image, ImageDraw
+import os
 
 # تعريف كلاس العقدة التي تمثل نقطة في المتاهة
 class Node():
@@ -13,6 +12,10 @@ class Node():
     
     def total_cost(self):
         return self.cost + self.heuristic
+
+    # 🔥 الحل: إضافة دالة مقارنة حتى يعرف heapq كيفية ترتيب الكائنات
+    def __lt__(self, other):
+        return self.total_cost() < other.total_cost()
 
 # كلاس يمثل قائمة الأولويات للبحث باستخدام A* و Dijkstra
 class PriorityQueueFrontier():
@@ -37,7 +40,7 @@ class PriorityQueueFrontier():
         self.states.remove(node.state)
         return node
 
-# كلاس المتاهة الذي يقوم بقراءة الملف النصي وتحليل البيانات
+# كلاس المتاهة لقراءة وتحليل الملف
 class Maze():
     def __init__(self, filename):
         with open(filename) as f:
@@ -45,32 +48,30 @@ class Maze():
         if contents.count("A") != 1 or contents.count("B") != 1:
             raise Exception("Maze must have exactly one start and one goal")
         contents = contents.splitlines()
-        self.height = len(contents)  # تحديد ارتفاع المتاهة
-        self.width = max(len(line) for line in contents)  # تحديد عرض المتاهة
-        self.walls = []  # مصفوفة الجدران
+        self.height = len(contents)
+        self.width = max(len(line) for line in contents)
+        self.walls = []
         for i in range(self.height):
             row = []
             for j in range(self.width):
                 try:
                     if contents[i][j] == "A":
-                        self.start = (i, j)  # تحديد نقطة البداية
+                        self.start = (i, j)
                         row.append(False)
                     elif contents[i][j] == "B":
-                        self.goal = (i, j)  # تحديد نقطة الهدف
+                        self.goal = (i, j)
                         row.append(False)
                     elif contents[i][j] == " ":
-                        row.append(False)  # المساحات الفارغة (مسموح بالحركة فيها)
+                        row.append(False)
                     else:
-                        row.append(True)  # الجدران (عائق للحركة)
+                        row.append(True)
                 except IndexError:
                     row.append(False)
             self.walls.append(row)
-        self.solution_astar = None  # تخزين الحل باستخدام A*
-        self.solution_dijkstra = None  # تخزين الحل باستخدام Dijkstra
+        self.solution_astar = None
+        self.solution_dijkstra = None
 
-    # طباعة المتاهة والحل إن وجد
     def print(self, solution=None):
-        print()
         for i, row in enumerate(self.walls):
             for j, col in enumerate(row):
                 if col:
@@ -84,9 +85,7 @@ class Maze():
                 else:
                     print(" ", end="")
             print()
-        print()
 
-    # تحديد الجيران الممكنين لكل حالة (الحركات الممكنة)
     def neighbors(self, state):
         row, col = state
         candidates = [("up", (row - 1, col)), ("down", (row + 1, col)), ("left", (row, col - 1)), ("right", (row, col + 1))]
@@ -96,13 +95,11 @@ class Maze():
                 result.append((action, (r, c)))
         return result
 
-    # الدالة الإرشادية لخوارزمية A* (المسافة بين الحالة الحالية والهدف باستخدام مانهاتن)
     def heuristic(self, state):
         return abs(state[0] - self.goal[0]) + abs(state[1] - self.goal[1])
 
-    # دالة لحل المتاهة باستخدام A* أو Dijkstra بناءً على اختيار المستخدم
     def solve(self, algorithm):
-        self.num_explored = 0  # عدد العقد المستكشفة
+        self.num_explored = 0
         start = Node(state=self.start, parent=None, action=None, cost=0, heuristic=self.heuristic(self.start) if algorithm == 'astar' else 0)
         frontier = PriorityQueueFrontier()
         frontier.add(start)
@@ -131,21 +128,22 @@ class Maze():
                     child = Node(state=state, parent=node, action=action, cost=new_cost, heuristic=heuristic_value)
                     frontier.add(child)
 
-# التحقق من صحة المدخلات عند تشغيل البرنامج
-if len(sys.argv) != 2:
-    sys.exit("Usage: python maze.py maze.txt")
+# تشغيل الكود تلقائيًا على جميع المتاهات
+maze_files = ["maze_30x30.txt", "maze_35x35.txt", "maze_40x40.txt"]
 
-# تنفيذ البرنامج
-m = Maze(sys.argv[1])
-print("Maze:")
-m.print()
-print("Solving with A*...")
-m.solve("astar")
-print("States Explored (A*):", m.num_explored)
-print("Solution (A*):")
-m.print(m.solution_astar[1])
-print("Solving with Dijkstra...")
-m.solve("dijkstra")
-print("States Explored (Dijkstra):", m.num_explored)
-print("Solution (Dijkstra):")
-m.print(m.solution_dijkstra[1])
+for maze_file in maze_files:
+    if os.path.exists(maze_file):
+        print(f"\n🔹 Processing: {maze_file}")
+        m = Maze(maze_file)
+        print("📌 Maze Layout:")
+        m.print()
+        print("🔍 Solving with A*...")
+        m.solve("astar")
+        print("📊 States Explored (A*):", m.num_explored)
+        m.print(m.solution_astar[1])
+        print("⚡ Solving with Dijkstra...")
+        m.solve("dijkstra")
+        print("📊 States Explored (Dijkstra):", m.num_explored)
+        m.print(m.solution_dijkstra[1])
+    else:
+        print(f"❌ Error: File {maze_file} not found.")
